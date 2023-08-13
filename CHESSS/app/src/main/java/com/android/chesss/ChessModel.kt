@@ -1,10 +1,31 @@
 package com.android.chesss
 
+import android.util.Log
+import kotlin.math.log
+
 class ChessModel {
     var piecesBox = mutableSetOf<ChessPiece>()
 
     init {
         reset()
+        //TODO
+        Log.d(TAG, "${piecesBox.size}")
+
+        movePiece(0,1,0,1)
+     //   movePiece(1,7,5,5)
+
+        Log.d(TAG, toString())
+        Log.d(TAG, "${piecesBox.size}")
+    }
+
+    fun movePiece(fromcol:Int, fromrow: Int, tocol: Int, torow: Int){
+        val movingPiece = pieceAt(fromcol, fromrow) ?:return
+        pieceAt(tocol, torow)?.let {
+            if (it.player == movingPiece.player){return}
+            piecesBox.remove(it)
+        }
+        movingPiece.col = tocol
+        movingPiece.row = torow
     }
      fun reset() {
         piecesBox.removeAll(piecesBox)
