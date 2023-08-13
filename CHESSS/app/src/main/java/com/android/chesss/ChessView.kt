@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 
@@ -16,18 +16,18 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private final val originY = 200f
     private final val cellSide = 130f
     private final val imgResIDs = setOf(R.drawable.
-    black_bishop,
-        R.drawable.white_bishop,
-        R.drawable.black_king,
-        R.drawable.white_king,
-        R.drawable.black_queen,
-        R.drawable.white_queen,
-        R.drawable.black_rook,
-        R.drawable.white_rook,
-        R.drawable.black_knight,
-        R.drawable.white_knight,
-        R.drawable.black_pawn,
-        R.drawable.white_pawn
+    bb,
+        R.drawable.wb,
+        R.drawable.bk,
+        R.drawable.wk,
+        R.drawable.bq,
+        R.drawable.wq,
+        R.drawable.br,
+        R.drawable.wr,
+        R.drawable.bn,
+        R.drawable.wn,
+        R.drawable.bp,
+        R.drawable.wp,
     )
     private final val bitmaps = mutableMapOf<Int, Bitmap>()
     private final val paint = Paint()
@@ -37,12 +37,33 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
 
     override fun onDraw(canvas: Canvas?) {
         drawChessboard(canvas)
+        drawPieces(canvas)
 
-        val whiteQueenBitmap = bitmaps[R.drawable.white_queen]!!
-        canvas?.drawBitmap(whiteQueenBitmap, null, Rect(0,0,200,200), paint)
+    }
+    private fun drawPieces(canvas: Canvas?){
+        val chessModel = ChessModel()
+        chessModel.reset()
+
+        for (row in 0..7){
+            for (col in 0..7){
+                chessModel.pieceAt(col, row)?.let { drawPieceAt(canvas, col, row, it.resID)
+                }
+            }
+        }
+    //    drawPieceAt(canvas, 0,7,R.drawable.wr)
+      //  drawPieceAt(canvas, 0,6,R.drawable.wp)
+
+
+    }
+    private fun drawPieceAt(canvas: Canvas?, col: Int,row: Int, resID: Int) {
+        val bitmap = bitmaps[resID]!!
+        canvas?.drawBitmap(bitmap,
+            null, RectF(originX + col * cellSide,originY + ( 7 -row ) * cellSide,originX + (col + 1)  * cellSide,originY + (( 7 - row ) +1)  * cellSide), paint)
+
+
     }
     private fun loadBitmaps(){
-        imgResIDs.forEach {
+        imgResIDs.forEach  {
             bitmaps[it] = BitmapFactory.decodeResource(resources, it)
         }
     }
@@ -50,8 +71,8 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
         for (i in 0..7) {
 
             for (j in 0..7) {
-                paint.color = if ((i + j) % 2 == 0)Color.LTGRAY
-                else Color.BLACK
+                paint.color = if ((i + j) % 2 == 1)Color.LTGRAY
+                else Color.DKGRAY
                 canvas?.drawRect(
                     originX + i * cellSide,
                     originY + j * cellSide,
