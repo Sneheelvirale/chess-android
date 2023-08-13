@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 
-private const val TAG = "MainActitvity"
+ const val TAG = "MainActitvity"
 
 class MainActivity : AppCompatActivity(), ChessDelegate {
 

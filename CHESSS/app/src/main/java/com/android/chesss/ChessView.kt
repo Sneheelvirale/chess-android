@@ -8,13 +8,15 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import kotlin.math.min
 
 class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
-
-    private final val originX = 20f
-    private final val originY = 200f
-    private final val cellSide = 130f
+    private final val scaleFactor = .9f
+    private final var originX = 20f
+    private final var originY = 200f
+    private final var cellSide = 130f
     private final val imgResIDs = setOf(
         R.drawable.bb,
         R.drawable.wb,
@@ -37,12 +39,16 @@ var chessDelegate: ChessDelegate? = null
     }
 
     override fun onDraw(canvas: Canvas?) {
+        canvas ?: return
+            val chessBoardSide = min(canvas.width, canvas.height) * scaleFactor
+            cellSide = chessBoardSide / 8f
+            originX =  (canvas.width - chessBoardSide ) / 2f
+            originY = (canvas.height - chessBoardSide ) / 2f
         drawChessboard(canvas)
         drawPieces(canvas)
-
     }
 
-    private fun drawPieces(canvas: Canvas?) {
+    private fun drawPieces(canvas: Canvas) {
 
 
         for (row in 0..7) {
@@ -54,9 +60,9 @@ var chessDelegate: ChessDelegate? = null
         }
     }
 
-    private fun drawPieceAt(canvas: Canvas?, col: Int, row: Int, resID: Int) {
+    private fun drawPieceAt(canvas: Canvas, col: Int, row: Int, resID: Int) {
         val bitmap = bitmaps[resID]!!
-        canvas?.drawBitmap(
+        canvas.drawBitmap(
             bitmap,
             null,
             RectF(
@@ -77,7 +83,7 @@ var chessDelegate: ChessDelegate? = null
         }
     }
 
-    private fun drawChessboard(canvas: Canvas?) {
+    private fun drawChessboard(canvas: Canvas) {
         for (col in 0..7) {
 
             for (row in 0..7) {
@@ -86,7 +92,7 @@ var chessDelegate: ChessDelegate? = null
                 }
                  }
             }
-            private fun drawSquareAt(canvas: Canvas?, col: Int, row: Int, isDark: Boolean) {
+            private fun drawSquareAt(canvas: Canvas, col: Int, row: Int, isDark: Boolean) {
                 paint.color = if (isDark) Color.BLUE
                 else Color.CYAN
                 canvas?.drawRect(
